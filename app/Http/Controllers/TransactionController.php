@@ -39,32 +39,34 @@ class TransactionController extends Controller
 
         try {
             $buktiPath = $request->file('bukti_dp')->store('bukti_dp', 'public');
-           $subtotal = $product->price * $request->qty;
-            $total_dp = $total * 0.5;
 
-            $transaksi = Transaction::create([
-                'user_id' => Auth::id(),
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'address' => $request->address,
-                'status' => 'pending',
-                'total' => $total,
-                // 'alamat_pengiriman' => $request->alamat_pengiriman,
-                'bukti_dp' => $buktiPath,
-                'total_dp' => $total_dp,
-            ]);
+// Hitung total sesuai qty
+        $total = $product->price * $request->qty;
+        $total_dp = $total * 0.5;
 
-            TransactionDetail::create([
-                'transaction_id' => $transaksi->id,
-                'product_id' => $product->id,
-                'qty' => $request->qty,
-                'price' => $product->price,
-                'subtotal' => $product->price,
-                'ukuran_baju' => $request->ukuran,
-            ]);
+        $transaksi = Transaction::create([
+            'user_id' => Auth::id(),
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'status' => 'pending',
+            'total' => $total,
+            'bukti_dp' => $buktiPath,
+            'total_dp' => $total_dp,
+        ]);
 
-            // ⬇️ Kurangi stok
-             $product->decrement('stock', $request->qty);
+        TransactionDetail::create([
+            'transaction_id' => $transaksi->id,
+            'product_id' => $product->id,
+            'qty' => $request->qty,
+            'price' => $product->price,
+            'subtotal' => $product->price * $request->qty, // perbaikan di sini
+            'ukuran_baju' => $request->ukuran,
+        ]);
+
+        // Kurangi stok sesuai qty
+        $product->decrement('stock', $request->qty);
+
 
             DB::commit();
             return redirect('/home')->with('success', 'Transaksi berhasil dikirim, menunggu konfirmasi admin.');
