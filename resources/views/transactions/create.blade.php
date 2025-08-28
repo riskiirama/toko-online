@@ -146,8 +146,8 @@
         <input type="file" name="bukti_dp" id="bukti_dp" accept="image/*" required>
 
         <p class="info-text">
-            Total Harga: <strong>Rp {{ number_format($product->price, 0, ',', '.') }}</strong><br>
-            Total DP (50%): <strong>Rp {{ number_format($product->price * 0.5, 0, ',', '.') }}</strong>
+            Total Harga: <strong id="total-harga">Rp {{ number_format($product->price, 0, ',', '.') }}</strong><br>
+            Total DP (50%): <strong id="total-dp">Rp {{ number_format($product->price * 0.5, 0, ',', '.') }}</strong>
         </p>
 
         <button type="submit">Kirim</button>
