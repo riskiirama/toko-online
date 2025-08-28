@@ -155,3 +155,27 @@
 
     <a href="{{ url('/products') }}" class="back-link">← Kembali ke Produk</a>
 @endsection
+
+
+<script>
+    const price = {{ $product->price }};
+    const qtyInput = document.getElementById('qty');
+    const totalHarga = document.getElementById('total-harga');
+    const totalDP = document.getElementById('total-dp');
+
+    function formatRupiah(angka) {
+        return "Rp " + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function updateTotal() {
+        const qty = parseInt(qtyInput.value) || 1;
+        const total = price * qty;
+        const dp = total * 0.5;
+
+        totalHarga.textContent = formatRupiah(total);
+        totalDP.textContent = formatRupiah(dp);
+    }
+
+    qtyInput.addEventListener('input', updateTotal);
+    updateTotal(); // jalankan sekali biar pas pertama kali langsung sesuai
+</script>
